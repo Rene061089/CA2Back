@@ -5,7 +5,6 @@ public class DadDTO
     private String id;
     private String joke;
 
-
     public DadDTO(String id, String joke)
     {
         this.id = id;

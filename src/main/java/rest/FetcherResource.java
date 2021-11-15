@@ -43,12 +43,20 @@ public class FetcherResource
 
         LocalTime start2 = LocalTime.now();
         String result2 = gson.toJson(HttpUtils.fetchDataParallel());
-        result2 = result2.replaceAll("[@]","");
+        result2 = result2.replaceAll("[@]", "");
         LocalTime end2 = LocalTime.now();
-        System.out.println("resultat 2 Parallel " +ChronoUnit.MILLIS.between(start2,end2));
+        System.out.println("resultat 2 Parallel " + ChronoUnit.MILLIS.between(start2, end2));
 
         return result2;
 
     }
 
+    @Path("dad")
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    public String getdadJokes() throws IOException, ExecutionException, InterruptedException
+    {
+        String result = gson.toJson(HttpUtils.singleDadFetch());
+        return result;
+    }
 }

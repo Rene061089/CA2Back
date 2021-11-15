@@ -24,11 +24,13 @@ public class HttpUtils
 
         ExecutorService es = Executors.newCachedThreadPool();
         Future<ChuckDTO> chuckDTOFuture = es.submit(
-                () -> gson.fromJson(HttpUtils.fetchData("https://api.chucknorris.io/jokes/random"), ChuckDTO.class)
+                HttpUtils::singleChuckFetch
+//                        gson.fromJson(HttpUtils.fetchData("https://api.chucknorris.io/jokes/random"), ChuckDTO.class)
         );
 
         Future<DadDTO> dadDTOFuture = es.submit(
-                () -> gson.fromJson(HttpUtils.fetchData("https://icanhazdadjoke.com"), DadDTO.class)
+                HttpUtils::singleDadFetch
+//                        gson.fromJson(HttpUtils.fetchData("https://icanhazdadjoke.com"), DadDTO.class)
         );
 
         Future<Covid19DTO[]> c19DTOFuture = es.submit(
@@ -49,6 +51,28 @@ public class HttpUtils
 
         return combinedDTO;
     }
+
+    public static DadDTO singleDadFetch() throws IOException
+    {
+
+        String dad = HttpUtils.fetchData("https://icanhazdadjoke.com");
+        DadDTO dadDTO = gson.fromJson(dad, DadDTO.class);
+
+
+        return new DadDTO(dadDTO.getId(),dadDTO.getJoke());
+    }
+
+    public static ChuckDTO singleChuckFetch() throws IOException
+    {
+
+        String chuck = HttpUtils.fetchData("https://api.chucknorris.io/jokes/random");
+        ChuckDTO chuckDTO = gson.fromJson(chuck, ChuckDTO.class);
+
+
+        return new ChuckDTO(chuckDTO.getUrl(), chuckDTO.getValue());
+    }
+
+
 
     public static CombinedDTO fetchDataSequential() throws IOException
     {
