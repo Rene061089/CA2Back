@@ -1,11 +1,13 @@
 package utils;
 
 
+import entities.Recipes;
 import entities.Role;
 import entities.User;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
+import java.util.List;
 
 public class SetupTestUsers {
 
@@ -23,6 +25,8 @@ public class SetupTestUsers {
     User user = new User("user", "test");
     User admin = new User("admin", "test");
     User both = new User("user_admin", "test");
+    Recipes recipes = new Recipes("Lasange", "Cheese + pasta + meet", "teste_img");
+    Recipes recipes1 = new Recipes("Lasange2", "Cheese + pasta + meet", "teste_img");
 
     if(admin.getUserPass().equals("test")||user.getUserPass().equals("test")||both.getUserPass().equals("test"))
       throw new UnsupportedOperationException("You have not changed the passwords");
@@ -30,16 +34,25 @@ public class SetupTestUsers {
     em.getTransaction().begin();
     Role userRole = new Role("user");
     Role adminRole = new Role("admin");
+
+    recipes.setUser(user);
+    recipes1.setUser(user);
+
     user.addRole(userRole);
     admin.addRole(adminRole);
     both.addRole(userRole);
     both.addRole(adminRole);
     em.persist(userRole);
     em.persist(adminRole);
+    em.persist(recipes);
+    em.persist(recipes1);
     em.persist(user);
     em.persist(admin);
     em.persist(both);
     em.getTransaction().commit();
+
+
+
     System.out.println("PW: " + user.getUserPass());
     System.out.println("Testing user with OK password: " + user.verifyPassword("test"));
     System.out.println("Testing user with wrong password: " + user.verifyPassword("test1"));

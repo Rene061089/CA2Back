@@ -3,14 +3,7 @@ package entities;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-import javax.persistence.Basic;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
-import javax.persistence.Table;
+import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import org.mindrot.jbcrypt.BCrypt;
@@ -36,6 +29,19 @@ public class User implements Serializable {
   @ManyToMany
   private List<Role> roleList = new ArrayList<>();
 
+  @OneToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE})
+  private List<Recipes> recipes;
+
+  public User(List<Recipes> recipes)
+  {
+    this.recipes = recipes;
+  }
+
+  public User(String userName)
+  {
+    this.userName = userName;
+  }
+
   public List<String> getRolesAsStrings() {
     if (roleList.isEmpty()) {
       return null;
@@ -56,6 +62,25 @@ public class User implements Serializable {
     this.userName = userName;
 
     this.userPass = BCrypt.hashpw(userPass,BCrypt.gensalt());
+  }
+
+//  public User(String userName, String userPass, List<Recipes> recipes) {
+//    this.userName = userName;
+//
+//    this.userPass = BCrypt.hashpw(userPass,BCrypt.gensalt());
+//
+//    this.recipes = recipes;
+//  }
+
+
+  public List<Recipes> getRecipes()
+  {
+    return recipes;
+  }
+
+  public void setRecipes(List<Recipes> recipes)
+  {
+    this.recipes = recipes;
   }
 
   public String getUserName() {
